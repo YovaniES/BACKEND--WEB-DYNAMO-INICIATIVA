@@ -1,0 +1,1862 @@
+[{
+        "id": 1,
+        "url": "requerimiento/admin",
+        "title": "Bandeja de Requerimientos",
+        "modeQueryId": 38,
+        "components": [{
+            "id": 1,
+            "type": 1,
+            "form": {
+                "fields": [
+                    { "label": "Solicitante/ Código QA/ Nombre Requerimiento", "name": "descripcion" },
+                    { "type": 4, "label": "Negocio", "name": "negocio", "queryId": 4 },
+                    { "type": 4, "label": "Estado", "name": "estado", "queryId": 5 },
+                    { "type": 4, "label": "Responsable TDP", "name": "responsable", "queryId": 6 },
+                    {
+                        "type": 3,
+                        "label": "Fecha Inicio",
+                        "name": "inicio",
+                        "format": "DD/MM/YYYY",
+                        "validation": { "expression": "@inicio > @fin", "result": "Ingrese un rango de fechas válido" }
+                    },
+                    { "type": 3, "label": "Fecha Fin", "name": "fin", "format": "DD/MM/YYYY" }
+                ],
+                "buttons": [{
+                        "name": "btnAgregar",
+                        "label": "Agregar",
+                        "tooltip": "Agregar Requerimiento",
+                        "iconClass": "fa fa-plus",
+                        "process": {
+                            "pageId": 2
+                        }
+                    },
+                    { "name": "exportarExcel", "label": "Exportar", "iconClass": "far fa-file-excel", "tooltip": "Exportar Base" },
+                    { "label": "Manual", "tooltip": "Descargar Manual", "iconClass": "fa fa-book-open text-info", "url": "http://indra.gestorqa.com/public/archivo/manualQA.pdf" }
+                ],
+                "modes": [{
+                        "id": 1,
+                        "descripcion": "OTROS ROLES",
+                        "button": {
+                            "hide": ["btnAgregar", "exportarExcel"]
+                        }
+                    },
+                    {
+                        "id": 2,
+                        "descripcion": "SOLICITANTE, GESTOR",
+                        "button": {
+                            "show": ["btnAgregar", "exportarExcel"]
+                        }
+                    },
+                    {
+                        "id": 3,
+                        "descripcion": "LÍDER, ANALISTA",
+                        "button": {
+                            "show": ["exportarExcel"]
+                        }
+                    }
+                ]
+            },
+            "grid": {
+                "queryId": 2,
+                "columns": [{
+                        "type": 5,
+                        "tooltip": "Ver Detalle",
+                        "iconClass": "fa fa-file text-info",
+                        "process": {
+                            "pageId": 2,
+                            "param": { "reqId": "reqId" }
+                        }
+                    },
+                    {
+                        "type": 5,
+                        "tooltip": "Status del Requerimiento",
+                        "iconClass": "fas fa-chart-line text-info",
+                        "process": {
+                            "pageId": 3,
+                            "param": { "proCod": "proCod" }
+                        }
+                    },
+                    { "label": "Req.", "name": "codigo", "width": 100 },
+                    {
+                        "label": "Estado",
+                        "name": "estado",
+                        "width": 140,
+                        "styleType": 1,
+                        "styleValue": {
+                            "Registrado": "#00A6D6",
+                            "Análisis": "#A2231D",
+                            "Derivado": "#58C700",
+                            "Rechazado": "#FF0C0C",
+                            "Prueba": "#2D572C",
+                            "Terminado": "#67381A",
+                            "Planificación": "#E69DFB",
+                            "Cancelado": "#b4b4b4",
+                            "Asignado": "#9d9101",
+                            "Standby": "#ff8000"
+                        }
+                    },
+                    { "label": "Tipo", "name": "tipoReq", "width": 200 },
+                    { "label": "SubTipo", "name": "subTipoReq", "width": 200 },
+                    { "label": "Negocio", "name": "negocio", "width": 100 },
+                    { "label": "Nombre Requerimiento", "name": "tema", "width": 300 },
+                    { "label": "Solicitante", "name": "responsableSegmento", "width": 200 },
+                    { "label": "Responsable TDP", "name": "datosRepresentanteTDP", "width": 200 },
+                    { "label": "Analista QA", "name": "datosQAIndra", "width": 200 },
+                    { "label": "Fec. Registro", "name": "fechaEnvio", "width": 110 },
+                    { "label": "Antigüedad", "name": "antiguedad", "width": 110, "formatType": 1}
+                ]
+            }
+        }]
+    },
+    {
+        "id": 2,
+        "url": "requerimiento/registrar",
+        "title": "Editar Requerimiento",
+        "modeQueryId": 14,
+        "params": ["reqId"],
+        "modes":[
+            {
+                "id":11,
+                "title": "Agregar Requerimiento",
+                "show":[2,4]
+            }
+        ],
+        "components": [{
+            "id": 1,
+            "type": 2,
+            "form": {
+                "dataQueryId": 25,
+                "dataParams": ["reqId"],
+                "fields": [
+                    { "type": 1, "name": "reqId", "column": 6, "label":"Código de Requerimiento" }
+                ],
+                "modes": [
+                    {
+                        "id": 1,
+                        "dataLoad": true,
+                        "descripcion": "Solo lectura",
+                        "field": {
+                            "edit": []
+                        }
+                    },
+                    {
+                    "id": 2,
+                    "dataLoad": true,
+                    "descripcion": "ROL SOLICITANTE, REGISTRADO : Estado Registrado, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },{
+                    "id": 3,
+                    "dataLoad": true,
+                    "descripcion": "ROL GESTOR, REGISTRADO : Se asigna o se modifica el responsable TDP  (cuando se modifica se mantiene el estado), REGISTRADO => DERIVADO, REGISTRADO => RECHAZADO ",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 4,
+                    "dataLoad": true,
+                    "descripcion": "ROL LIDER, DERIVADO, Se asigna el Analista y se cambia de estado : DERIVADO => ASIGNADO ",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 6,
+                    "dataLoad": true,
+                    "descripcion": "ROL ANALISTA, ASIGNADO, Se asigna el Analista y se cambia de estado : ASIGNADO => ANALISIS, ASIGNADO => CANCELADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 7,
+                    "dataLoad": true,
+                    "descripcion": "ROL ANALISTA, ANALISIS, se cambia de estado :ANALISIS => PLANIFICACION, ANALISIS => STAND BY, ANALISIS => CANCELADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 8,
+                    "dataLoad": true,
+                    "descripcion": "ROL ANALISTA, PLANIFICACION, se cambia de estado :PLANIFICACION => PRUEBA, PLANIFICACION => STAND BY, PLANIFICACION => CANCELADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 9,
+                    "dataLoad": true,
+                    "descripcion": "ROL ANALISTA, PRUEBA, se cambia de estado :PRUEBA => TERMINADO, PRUEBA => STAND BY, PRUEBA => CANCELADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 10,
+                    "dataLoad": true,
+                    "descripcion": "ROL ANALISTA, STAND BY, se cambia de estado :STAND BY => ANALISIS, STAND BY => PLANIFICACION, STAND BY => PRUEBA, STAND BY => CANCELADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 11,
+                    "descripcion": "ROL SOLICITANTE, Sin estado, Pantalla inicial del requerimiento, se grabara como REGISTRADO",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 12,
+                    "dataLoad": true,
+                    "descripcion": "ROL SOLICITANTE, DERIVADO : Estado Derivado, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 13,
+                    "dataLoad": true,
+                    "descripcion": "ROL GESTOR, DERIVADO : Estado Derivado, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 14,
+                    "dataLoad": true,
+                    "descripcion": "ROL LÍDER, ANÁLISIS : Estado Análisis, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 15,
+                    "dataLoad": true,
+                    "descripcion": "ROL LÍDER : Estado Análisis, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 16,
+                    "dataLoad": true,
+                    "descripcion": "ROL LÍDER : Estado Análisis, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 17,
+                    "dataLoad": true,
+                    "descripcion": "ROL LÍDER : Estado Análisis, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                },
+                {
+                    "id": 18,
+                    "dataLoad": true,
+                    "descripcion": "ROL LÍDER : Estado Análisis, se pueden actualizar los campos",
+                    "field": {
+                        "edit": []
+                    }
+                }
+            ]
+            }
+        },
+            {
+                "type": 2,
+                "id": 2,
+                "form": {
+                    "dataQueryId": 25,
+                    "dataParams": ["reqId"],
+                    "fields": [
+                        { "type": 7, "name": "reqId" },
+                        { "type": 6, "name": "seccionRequerimiento", "value": "Requerimiento" },
+                        { "type": 4, "label": "Tipo", "name": "tipoRequerimiento", "queryId": 7, "required": true },
+                        {
+                            "type": 4,
+                            "label": "Subtipo",
+                            "name": "subTipoRequerimiento",
+                            "queryId": 8,
+                            "required": true,
+                            "parents": [{ "name": "tipoRequerimiento", "nameFilter": "tipoRequerimiento", "required": true }]
+                        },
+                        {
+                            "type": 10,
+                            "name": "mensaje",
+                            "value": "prueba",
+                            "styleClass": "alert alert-warning",
+                            "isVisibleCondition": { "expression": "@tipoRequerimiento" },
+                            "valueCondition": {
+                                "conditions": [
+                                    { "expression": "@tipoRequerimiento=='3' && @subTipoRequerimiento=='6'", "result": "Incluye Lanzamientos Comerciales como Nueva Parrilla, entre otros." },
+                                    { "expression": "@tipoRequerimiento=='3' && @subTipoRequerimiento=='7'", "result": "Incluye servicios/productos como nuevo bono, descuentos, entre otros." },
+                                    { "expression": "@tipoRequerimiento=='3'", "result": "Requerimientos de nuevos servicios/productos/beneficios." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='8'", "result": "Requerimiento de CR/Sprint que se incluyan en un DROP." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='9'", "result": "Requerimiento para Migración de Clientes." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='10'", "result": "Requerimiento para probar lanzamiento de productos y servicios." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='11'", "result": "Requerimiento para probar la solución de una incidencia." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='12'", "result": "Requerimiento para validar que la operación comercial no se vea afectada ante un mantenimiento en los sistemas." },
+                                    { "expression": "@tipoRequerimiento=='4' && @subTipoRequerimiento=='13'", "result": "Cambio de precios de equipos." },
+                                    { "expression": "@tipoRequerimiento=='4'", "result": "Requerimientos de trabajos de madrugada." },
+                                    { "expression": "@tipoRequerimiento=='5' && @subTipoRequerimiento=='15'", "result": "Modificaciones en condiciones o beneficios de campañas ofrecidas a la planta." },
+                                    { "expression": "@tipoRequerimiento=='5' && @subTipoRequerimiento=='16'", "result": "Actualizaciones internas en los sistemas." },
+                                    { "expression": "@tipoRequerimiento=='5' && @subTipoRequerimiento=='17'", "result": "Atención de incidencia masiva que afecte la operación comercial." },
+                                    { "expression": "@tipoRequerimiento=='5'", "result": "Requerimientos de pruebas diurnas por cambios en servicios, productos y/o beneficios existentes." }
+                                ]
+                            },
+                            "column": 12
+                        },
+                        {
+                            "label": "Código TDP",
+                            "name": "codigoTdp",
+                            "column": 4,
+                            "required": true,
+                            "tooltipCondition": {
+                                "conditions": [{
+                                        "expression": "@tipoRequerimiento==3 && @subTipoRequerimiento==6",
+                                        "result": "Ejemplo: POS-758"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==3 && @subTipoRequerimiento==7",
+                                        "result": "Ejemplo: PRE-321"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==3 && @subTipoRequerimiento==6",
+                                        "result": "Ejemplo: Lanzamiento Nueva Parrilla Ilimitada"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==13",
+                                        "result": "Ejemplo: PPM#69141"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "label": "Nombre de Requerimiento",
+                            "name": "nombreRequerimiento",
+                            "column": 8,
+                            "required": true,
+                            "tooltipCondition": {
+                                "conditions": [{
+                                        "expression": "@tipoRequerimiento==3 && @subTipoRequerimiento==6",
+                                        "result": "Ejemplo: Lanzamiento Nueva Parrilla Ilimitada"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==3 && @subTipoRequerimiento==7",
+                                        "result": "Ejemplo: Recarga y gana"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==8",
+                                        "result": "Ejemplo: DROP15-CR3451 Nueva cuota inicial"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==13",
+                                        "result": "Ejemplo: EPC Fast Track 29/02/2019"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==11",
+                                        "result": "Ejemplo: INC000001243333 - botón de cambio de equipo"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==12",
+                                        "result": "Ejemplo: Nueva versión ALTAMIRA"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==10",
+                                        "result": "Ejemplo: PAP Nueva parrilla"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==4 && @subTipoRequerimiento==9",
+                                        "result": "Ejemplo: ROLLOUT 7"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==5 && @subTipoRequerimiento==15",
+                                        "result": "Ejemplo: Cambio en beneficios Pre Plan Flex"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==5 && @subTipoRequerimiento==16",
+                                        "result": "Ejemplo: APP Mi Movistar"
+                                    },
+                                    {
+                                        "expression": "@tipoRequerimiento==5 && @subTipoRequerimiento==17",
+                                        "result": "Ejemplo: Incidencia en Generar Disputa"
+                                    }
+                                ]
+                            }
+                        },
+                        { "type": 5, "label": "Descripción", "name": "descripcion", "column": 12, "required": true },
+                        { "type": 6, "label": "", "column": 1 },
+                        { "type": 6, "name": "seccionSolicitante", "value": "Solicitante" },
+                        { "label": "Nombres y Apellidos", "name": "solicitante", "column": 6, "required": true },
+                        { "label": "Jefe/Gerente", "name": "jefeSolicitante", "column": 6, "required": true },
+                        { "type": 8, "label": "Correo", "name": "correoSolicitante", "column": 4, "required": true },
+                        { "type": 9, "label": "Teléfono", "name": "telefonoSolicitante", "column": 4, "required": true },
+                        { "type": 4, "label": "Área", "name": "areaSolicitante", "column": 4, "queryId": 9, "required": true },
+                        { "type": 6, "name": "seccionOtraInfo", "value": "Datos Adicionales" },
+                        { "type": 4, "label": "Gestión", "name": "gestion", "column": 3, "queryId": 10, "required": true },
+                        { "type": 4, "label": "Negocio", "name": "negocio", "column": 3, "queryId": 4, "required": true },
+                        { "type": 4, "label": "Segmento", "name": "segmento", "column": 3, "queryId": 11, "required": true },
+                        { "type": 4, "label": "Producto", "name": "producto", "column": 3, "queryId": 12, "required": true },
+                        { "type": 3, "label": "Fecha Solicitud", "name": "fechaSolicitud", "column": 3, "format": "DD/MM/YYYY HH:mm" },
+                        { "type": 3, "label": "Fecha Lanzamiento", "name": "fechaLanzamiento", "column": 3, "required": true, "format": "DD/MM/YYYY" },
+                        {
+                            "type": 3,
+                            "label": "Fecha y hora de ventana",
+                            "name": "fechaVentana",
+                            "column": 3,
+                            "required": true,
+                            "format": "DD/MM/YYYY HH:mm",
+                            "isVisibleCondition": { "expression": "@tipoRequerimiento=='4'" }
+                        },
+                        {
+                            "type": 3,
+                            "label": "Fecha y hora de cambio diurno",
+                            "name": "fechaCambio",
+                            "column": 3,
+                            "required": true,
+                            "format": "DD/MM/YYYY HH:mm",
+                            "isVisibleCondition": { "expression": "@tipoRequerimiento=='5'" }
+                        },
+                        { "type": 4, "label": "Responsable TDP", "name": "responsable", "queryId": 6, "required": true },
+                        { "type": 4, "label": "Analista", "name": "analista", "queryId": 54, "required": true }
+                    ],
+                    "buttons": [
+                        { "name": "btnFormato", "label": "Formato Único", "iconClass": "fas fa-file-excel", "url": "http://indra.gestorqa.com/public/archivo/Formato_%C3%BAnico_ingreso_requerimientos_movil.xlsx" },
+                        {
+                            "name": "btnRegistrar",
+                            "label": "Registrar",
+                            "iconClass": "fa fa-save",
+                            "process": {
+                                "queryId": 13,
+                                "notificationId": 1,
+                                "pageId": 1,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se registró correctamente",
+                                "errorMessage": "Ocurrio un problema en el registro del requerimiento"
+                            }
+                        },
+                        {
+                            "name": "btnActualizar",
+                            "label": "Actualizar",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 52,
+								"notificationId": 13,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se actualizó correctamente",
+                                "errorMessage": "Ocurrio un problema en el registro del requerimiento"
+                            }
+                        },
+                        {
+                            "name": "btnAsignar",
+                            "label": "Asignar",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 55,
+                                "notificationId": 4,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "name": "btnDesdeAsignado",
+                            "label": "Cambiar Estado",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 56,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "name": "btnDesdeAnalisis",
+                            "label": "Cambiar Estado",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 57,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "name": "btnDesdePlanificacion",
+                            "label": "Cambiar Estado",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 58,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "name": "btnDesdePrueba",
+                            "label": "Cambiar Estado",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 59,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "name": "btnDesdeStandby",
+                            "label": "Cambiar Estado",
+                            "iconClass": "far fa-share-square",
+                            "process": {
+                                "queryId": 60,
+                                "validate": true,
+                                "errorValidationMessage": "Existen campos incompletos o inválidos",
+                                "successMessage": "El requerimiento se cambió de estado correctamente",
+                                "errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+                                "pageId": 1
+                            }
+                        },
+                        {
+                            "label": "Regresar",
+                            "iconClass": "fa fa-caret-left",
+                            "tooltip": "Regresar",
+                            "process": {
+                                "pageId": 1
+                            }
+                        }
+                    ],
+                    "modes": [{
+                            "id": 1,
+                            "dataLoad": true,
+                            "descripcion": "Solo lectura",
+                            "field": {
+                                "edit": [],
+                                "hide": [
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ]
+                            },
+                            "button": {
+                                "show": []
+                            }
+                        },
+                        {
+                            "id": 2,
+                            "dataLoad": true,
+                            "descripcion": "ROL SOLICITANTE, REGISTRADO : Estado Registrado, se pueden actualizar los campos",
+                            "field": {
+                                "hide": [
+                                    "responsable", "analista",
+
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["nombreRequerimiento", "fechaLanzamiento", "fechaVentana", "negocio"]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 3,
+                            "dataLoad": true,
+                            "descripcion": "ROL GESTOR, REGISTRADO : Se asigna o se modifica el responsable TDP  (cuando se modifica se mantiene el estado), REGISTRADO => DERIVADO, REGISTRADO => RECHAZADO ",
+                            "field": {
+                                "hide": [
+                                    "analista",
+
+                                    "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento", "fechaVentana", "negocio", "desdeRegistrado", "responsable",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo","nombreRequerimiento"
+                                ]
+                            },
+                            "button": {
+                                "show": [
+                                    "btnActualizar", "btnDesdeRegistrado"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 4,
+                            "dataLoad": true,
+                            "descripcion": "ROL LIDER, DERIVADO, Se asigna el Analista y se cambia de estado : DERIVADO => ASIGNADO ",
+                            "field": {
+                                "hide": [
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["analista"]
+                            },
+                            "button": {
+                                "show": ["btnAsignar"]
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "dataLoad": true,
+                            "descripcion": "ROL ANALISTA, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 7,
+                            "dataLoad": true,
+                            "descripcion": "ROL ANALISTA, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion",
+                                    "motivoStandby", "observacionStandby","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "dataLoad": true,
+                            "descripcion": "ROL ANALISTA, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion",
+                                    "motivoStandby", "observacionStandby","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "dataLoad": true,
+                            "descripcion": "ROL ANALISTA, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion",
+                                    "motivoStandby", "observacionStandby","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 10,
+                            "dataLoad": true,
+                            "descripcion": "ROL ANALISTA, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 11,
+                            "descripcion": "ROL SOLICITANTE, Sin estado, Pantalla inicial del requerimiento, se grabara como REGISTRADO",
+                            "field": {
+                                "hide": [
+                                    "responsable", "analista",
+
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "read": ["fechaSolicitud"]
+                            },
+                            "button": {
+                                "show": ["btnFormato", "btnRegistrar"]
+                            }
+                        },
+                        {
+                            "id": 12,
+                            "dataLoad": true,
+                            "descripcion": "ROL SOLICITANTE, DERIVADO : Estado Derivado, se pueden actualizar los campos",
+                            "field": {
+                                "hide": [
+                                    "responsable","analista",
+
+                                        "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+										"seccionRechazo", "motivoRechazo", "observacionRechazo",
+										"seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+										"seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento", "fechaVentana"]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 13,
+                            "dataLoad": true,
+                            "descripcion": "ROL GESTOR, MENOS Rechazado, Cancelado y Terminado : Se asigna o se modifica la fecha de lanzamiento  (cuando se modifica se mantiene el estado) ",
+                            "field": {
+                                "hide": [
+                                    "analista",
+                                        
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento", "fechaVentana"]
+                            },
+                            "button": {
+                                "show": [
+                                    "btnActualizar"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "dataLoad": true,
+                            "descripcion": "ROL LÍDER, ASIGNADO : Se asigna o se modifica la fecha de lanzamiento  (cuando se modifica se mantiene el estado) ",
+                            "field": {
+                                "hide": [
+                                        
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento","analista"]
+                            },
+                            "button": {
+                                "show": [
+                                    "btnActualizar"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 15,
+                            "dataLoad": true,
+                            "descripcion": "ROL LÍDER : Se asigna o se modifica la fecha de lanzamiento  (cuando se modifica se mantiene el estado) ",
+                            "field": {
+                                "hide": [
+                                    "analista",
+                                        
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento"]
+                            },
+                            "button": {
+                                "show": [
+                                    "btnActualizar"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 16,
+                            "dataLoad": true,
+                            "descripcion": "ROL LÍDER : Se asigna o se modifica la fecha de lanzamiento  (cuando se modifica se mantiene el estado) ",
+                            "field": {
+                                "hide": [
+                                    "analista",
+                                        
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": ["fechaLanzamiento"]
+                            },
+                            "button": {
+                                "show": [
+                                    "btnActualizar"
+                                ]
+                            }
+                        },
+                        {
+                            "id": 17,
+                            "dataLoad": true,
+                            "descripcion": "ROL LIDER, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo"
+                                ],
+                                "edit": [
+                                    "motivoCancelacion", "observacionCancelacion",
+                                    "motivoStandby", "observacionStandby","fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        },
+                        {
+                            "id": 18,
+                            "dataLoad": true,
+                            "descripcion": "ROL LIDER, se cambia la fecha de lanzamiento",
+                            "field": {
+                                "hide": [
+                                    "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionStandby", "motivoStandby", "observacionStandby"
+                                ],
+                                "edit": [
+                                    "fechaLanzamiento"
+                                ]
+                            },
+                            "button": {
+                                "show": ["btnActualizar"]
+                            }
+                        }
+
+                    ]
+                }
+            },
+			{
+                "type": 2,
+                "id": 3,
+				
+				"title": "Cambio de Estado",
+				"form":{
+					"dataQueryId": 25,
+					"fields": [
+							{ "type": 7, "name": "reqId" },
+							{ "type": 6, "name": "seccionCambioEstado", "value": "Validación de Requerimiento" },
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdeRegistrado",
+								"column": 12,
+								"options": [
+									{ "label": "Derivar", "value": "3" },
+									{ "label": "Rechazar", "value": "2" }
+								],
+								"extra": {
+									"optionPerRow": 2,
+									"styleType": 2
+								}
+							},
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdeAsignado",
+								"column": 12,
+								"options": [
+									{ "label": "Análisis", "value": "5" },
+									{ "label": "Cancelar", "value": "10" }
+								],
+								"extra": {
+									"optionPerRow": 2,
+									"styleType": 2
+								}
+							},
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdeAnalisis",
+								"column": 12,
+								"options": [
+									{ "label": "Planificación", "value": "6" },
+									{ "label": "Standby", "value": "9" },
+									{ "label": "Cancelar", "value": "10" }
+								],
+								"extra": {
+									"optionPerRow": 3,
+									"styleType": 2
+								}
+							},
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdePlanificacion",
+								"column": 12,
+								"options": [
+									{ "label": "Prueba", "value": "7" },
+									{ "label": "Standby", "value": "9" },
+									{ "label": "Cancelar", "value": "10" }
+								],
+								"extra": {
+									"optionPerRow": 3,
+									"styleType": 2
+								}
+							},
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdePrueba",
+								"column": 12,
+								"options": [
+									{ "label": "Terminado", "value": "8" },
+									{ "label": "Standby", "value": "9" },
+									{ "label": "Cancelar", "value": "10" }
+								],
+								"extra": {
+									"optionPerRow": 3,
+									"styleType": 2
+								}
+							},
+							{
+								"type": 12,
+								"label": "Cambiar estado hacia:",
+								"name": "desdeStandby",
+								"column": 12,
+								"options": [
+									{ "label": "Análisis", "value": "5" },
+									{ "label": "Planificación", "value": "6" },
+									{ "label": "Prueba", "value": "7" }
+								],
+								"extra": {
+									"optionPerRow": 3,
+									"styleType": 2
+								}
+							},
+							{ "type": 6, "name": "seccionRechazo", "value": "Observaciones de Rechazo", "isVisibleCondition": { "expression": "@desdeRegistrado==2" } },
+							{ "type": 4, "label": "Motivo", "name": "motivoRechazo", "queryId": 51, "required": true, "isVisibleCondition": { "expression": "@desdeRegistrado==2" } },
+							{ "type": 5, "label": "Observación", "name": "observacionRechazo", "required": true, "isVisibleCondition": { "expression": "@desdeRegistrado==2" } },
+							
+							{
+								"type": 6,
+								"name": "seccionCancelacion",
+								"value": "Observaciones de Cancelación",
+								"isVisibleCondition": {
+									"expression": "@desdeAsignado==10 || @desdeAnalisis==10 || @desdePlanificacion==10 || @desdePrueba==10"
+								}
+							},
+							{
+								"type": 4,
+								"label": "Motivo",
+								"name": "motivoCancelacion",
+								"queryId": 67,
+								"required": true,
+								"isVisibleCondition": {
+									"expression": "@desdeAsignado==10 || @desdeAnalisis==10 || @desdePlanificacion==10 || @desdePrueba==10"
+								}
+							},
+							{
+								"type": 5,
+								"label": "Observación",
+								"name": "observacionCancelacion",
+								"required": true,
+								"isVisibleCondition": {
+									"expression": "@desdeAsignado==10 || @desdeAnalisis==10 || @desdePlanificacion==10 || @desdePrueba==10"
+								}
+							},
+
+
+							{
+								"type": 6,
+								"name": "seccionStandby",
+								"value": "Observaciones de Standby",
+								"isVisibleCondition": {
+									"expression": "@desdeAnalisis==9 || @desdePlanificacion==9 || @desdePrueba==9"
+								}
+							},
+							{
+								"type": 4,
+								"label": "Motivo",
+								"name": "motivoStandby",
+								"queryId": 68,
+								"required": true,
+								"isVisibleCondition": {
+									"expression": "@desdeAnalisis==9 || @desdePlanificacion==9 || @desdePrueba==9"
+								}
+							},
+							{
+								"type": 5,
+								"label": "Observación",
+								"name": "observacionStandby",
+								"required": true,
+								"isVisibleCondition": {
+									"expression": "@desdeAnalisis==9 || @desdePlanificacion==9 || @desdePrueba==9"
+								}
+                            },
+                            
+                            {
+								"type": 6,
+								"name": "seccionTerminado",
+								"value": "Observaciones de Terminado",
+								"isVisibleCondition": {
+									"expression": "@desdePrueba==8"
+								}
+							},
+							{
+								"type": 4,
+								"label": "Motivo",
+								"name": "motivoTerminado",
+								"queryId": 69,
+								"required": true,
+								"isVisibleCondition": {
+									"expression": "@desdePrueba==8"
+								}
+							}
+
+						],
+						"buttons": [
+							{ "name": "btnFormato", "label": "Formato Único", "iconClass": "fas fa-file-excel", "url": "http://indra.gestorqa.com/public/archivo/Formato_%C3%BAnico_ingreso_requerimientos_movil.xlsx" },
+							{
+								"name": "btnRegistrar",
+								"label": "Registrar",
+								"iconClass": "fa fa-save",
+								"process": {
+									"queryId": 13,
+									"pageId": 1,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se registró correctamente",
+									"errorMessage": "Ocurrio un problema en el registro del requerimiento"
+								}
+							},
+							{
+								"name": "btnActualizar",
+								"label": "Actualizar",
+								"iconClass": "far fa-share-square",
+								"process": {
+									"queryId": 52,
+									"notificationId": 13,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se actualizó correctamente",
+									"errorMessage": "Ocurrio un problema en el registro del requerimiento"
+								}
+							},
+							{
+								"name": "btnDesdeRegistrado",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 53,
+                                    "notificationId": 15,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnAsignar",
+								"label": "Asignar",
+								"iconClass": "far fa-share-square",
+								"process": {
+									"queryId": 55,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnDesdeAsignado",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 56,
+                                    "notificationId": 16,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnDesdeAnalisis",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 57,
+                                    "notificationId": 16,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnDesdePlanificacion",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 58,
+                                    "notificationId": 16,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnDesdePrueba",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 59,
+                                    "notificationId": 16,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							},
+							{
+								"name": "btnDesdeStandby",
+								"label": "Cambiar Estado",
+								"iconClass": "far fa-share-square",
+								"process": {
+                                    "queryId": 60,
+                                    "notificationId": 16,
+									"validate": true,
+									"errorValidationMessage": "Existen campos incompletos o inválidos",
+									"successMessage": "El requerimiento se cambió de estado correctamente",
+									"errorMessage": "Ocurrio un problema en el cambió de estado requerimiento",
+									"pageId": 1
+								}
+							}
+						],
+						"modes": [
+							{
+                            "id": 1,
+                            "dataLoad": true,
+                            "descripcion": "Solo lectura",
+                            "field": {
+                                "edit": [],
+                                "hide": [
+                                    "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                    "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                    "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                    "seccionStandby", "motivoStandby", "observacionStandby","motivoTerminado"
+                                ]
+                            },
+                            "button": {
+                                "show": []
+								}
+							},
+							{
+								"id": 2,
+								"dataLoad": true,
+								"descripcion": "ROL SOLICITANTE, REGISTRADO : Estado Registrado, se pueden actualizar los campos",
+								"field": {
+									"hide": [
+										"responsable", "analista",
+
+										"seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+										"seccionRechazo", "motivoRechazo", "observacionRechazo",
+										"seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+										"seccionStandby", "motivoStandby", "observacionStandby","motivoTerminado"
+									],
+									"edit": ["nombreRequerimiento", "fechaLanzamiento", "fechaVentana", "negocio"]
+								},
+								"button": {
+									"show": []
+								}
+							},
+							{
+								"id": 3,
+								"dataLoad": true,
+								"descripcion": "ROL GESTOR, REGISTRADO : Se asigna o se modifica el responsable TDP  (cuando se modifica se mantiene el estado), REGISTRADO => DERIVADO, REGISTRADO => RECHAZADO ",
+								"field": {
+									"hide": [
+										"desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeRegistrado"]
+								}
+
+							},
+							{
+								"id": 4,
+								"dataLoad": true,
+								"descripcion": "ROL LIDER, DERIVADO, Se asigna el Analista y se cambia de estado : DERIVADO => ASIGNADO ",
+								"field": {
+									"hide": [
+										"desdeRegistrado","desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+										"seccionCambioEstado"
+									]
+								},
+								"button": {
+									"show": []
+								}
+							},
+							{
+								"id": 6,
+								"dataLoad": true,
+								"descripcion": "ROL ANALISTA, ASIGNADO, Se asigna el Analista y se cambia de estado : ASIGNADO => ANALISIS, ASIGNADO => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeAsignado"]
+								}
+							},
+							{
+								"id": 7,
+								"dataLoad": true,
+								"descripcion": "ROL ANALISTA, ANALISIS, se cambia de estado :ANALISIS => PLANIFICACION, ANALISIS => STAND BY, ANALISIS => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdePlanificacion", "desdePrueba", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeAnalisis"]
+								}
+							},
+							{
+								"id": 8,
+								"dataLoad": true,
+								"descripcion": "ROL ANALISTA, PLANIFICACION, se cambia de estado :PLANIFICACION => PRUEBA, PLANIFICACION => STAND BY, PLANIFICACION => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePrueba", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdePlanificacion"]
+								}
+							},
+							{
+								"id": 9,
+								"dataLoad": true,
+								"descripcion": "ROL ANALISTA, PRUEBA, se cambia de estado :PRUEBA => TERMINADO, PRUEBA => STAND BY, PRUEBA => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby","motivoTerminado"
+									]
+								},
+								"button": {
+									"show": ["btnDesdePrueba"]
+								}
+							},
+							{
+								"id": 10,
+								"dataLoad": true,
+								"descripcion": "ROL ANALISTA, STAND BY, se cambia de estado :STAND BY => ANALISIS, STAND BY => PLANIFICACION, STAND BY => PRUEBA, STAND BY => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeStandby"]
+								}
+							},
+							{
+								"id": 11,
+								"descripcion": "ROL SOLICITANTE, Sin estado, Pantalla inicial del requerimiento, se grabara como REGISTRADO",
+								"field": {
+									"hide": [
+										"responsable", "analista",
+
+										"seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+										"seccionRechazo", "motivoRechazo", "observacionRechazo",
+										"seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+										"seccionStandby", "motivoStandby", "observacionStandby"
+									],
+									"read": ["fechaSolicitud"]
+								},
+								"button": {
+									"show": ["btnFormato", "btnRegistrar"]
+								}
+							},
+                            {
+                                "id": 12,
+                                "dataLoad": true,
+                                "descripcion": "ROL SOLICITANTE, DERIVADO : Estado Derivado, se pueden actualizar los campos",
+                                "field": {
+                                    "hide": [
+                                        "responsable",
+
+                                        "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+										"seccionRechazo", "motivoRechazo", "observacionRechazo",
+										"seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+										"seccionStandby", "motivoStandby", "observacionStandby"
+                                    ],
+                                    "edit": ["fechaLanzamiento", "fechaVentana"]
+                                },
+                                "button": {
+                                    "show": []
+                                }
+                            },
+                            {
+                                "id": 13,
+                                "dataLoad": true,
+                                "descripcion": "ROL GESTOR, DERIVADO : Se asigna o se modifica la fecha de lanzamiento  (cuando se modifica se mantiene el estado) ",
+                                "field": {
+                                    "hide": [
+                                        "analista",
+                                            
+                                        "seccionCambioEstado", "desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby",
+                                        "seccionRechazo", "motivoRechazo", "observacionRechazo",
+                                        "seccionCancelacion", "motivoCancelacion", "observacionCancelacion",
+                                        "seccionStandby", "motivoStandby", "observacionStandby"
+                                    ],
+                                    "edit": ["fechaLanzamiento"]
+                                },
+                                "button": {
+                                    "show": []
+                                }
+                            },
+                            {
+                                "id": 14,
+                                "dataLoad": true,
+                                "descripcion": "ROL LÍDER, ASIGNADO, se cambia de estado : ASIGNADO => ANALISIS, ASIGNADO => CANCELADO",
+                                "field": {
+									"hide": [
+										"desdeRegistrado", "desdeAnalisis", "desdePlanificacion", "desdePrueba", "desdeStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeAsignado"]
+								}
+                            },
+							{
+								"id": 15,
+								"dataLoad": true,
+								"descripcion": "ROL LÍDER, ANALISIS, se cambia de estado :ANALISIS => PLANIFICACION, ANALISIS => STAND BY, ANALISIS => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdePlanificacion", "desdePrueba", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeAnalisis"]
+								}
+							},
+							{
+								"id": 16,
+								"dataLoad": true,
+								"descripcion": "ROL LIDER, PLANIFICACION, se cambia de estado :PLANIFICACION => PRUEBA, PLANIFICACION => STAND BY, PLANIFICACION => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePrueba", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby"
+									]
+								},
+								"button": {
+									"show": ["btnDesdePlanificacion"]
+								}
+							},
+							{
+								"id": 17,
+								"dataLoad": true,
+								"descripcion": "ROL LIDER, PRUEBA, se cambia de estado :PRUEBA => TERMINADO, PRUEBA => STAND BY, PRUEBA => CANCELADO",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdeStandby"
+									],
+									"edit": [
+										"motivoCancelacion", "observacionCancelacion",
+										"motivoStandby", "observacionStandby","motivoTerminado"
+									]
+								},
+								"button": {
+									"show": ["btnDesdePrueba"]
+								}
+							},
+							{
+								"id": 18,
+								"dataLoad": true,
+								"descripcion": "ROL LIDER, STAND BY, se cambia de estado :STAND BY => ANALISIS, STAND BY => PLANIFICACION, STAND BY => PRUEBA",
+								"field": {
+									"hide": [
+										"desdeRegistrado", "desdeAsignado", "desdeAnalisis", "desdePlanificacion", "desdePrueba"
+									]
+								},
+								"button": {
+									"show": ["btnDesdeStandby"]
+								}
+							}
+						]
+				}
+            },
+            {
+                "type": 5,
+                "id": 4,
+				"title": "Historial de Documentos",
+                "donwloadUrl": "http://indra.gestorqa.com/public/archivo/migracion/",
+                "uploadUrl": "http://indra.gestorqa.com/migracion/upload",
+                "insertQueryId": 40,
+                "grid": {
+                    "queryId": 39,
+                    "deleteQueryId": 41,
+                    "columns": [
+                        { "label": "Nombre", "name": "name", "width": 500 },
+                        { "label": "Fecha y Hora de Carga", "name": "fecha", "width": 480 }
+                    ]
+                }
+            },
+            {
+                "type": 6,
+                "id": 5,
+                "title": "Historial de Cambios",
+                "grid": {
+                    "queryId": 42,
+                    "columns": [
+                        { "label": "Estado", "name": "estado", "width": 350 },
+                        { "label": "Motivo", "name": "comentario", "width": 350 },
+                        { "label": "Fecha y Hora de Cambio", "name": "fecha", "width": 350 }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "url": "requerimiento/status",
+        "title": "Informe",
+        "iconClass": "far fa-chart-bar",
+        "buttons": [
+            { "name": "exportarExcel", "iconClass": "far fa-file-excel", "tooltip": "Exportar" }
+        ],
+        "components": [
+            {
+                "id": 1,
+                "type": 2,
+                "form": {
+                    "dataQueryId": 25,
+                    "dataParams": ["reqId"],
+                    "fields": [
+                        { "type": 7, "name": "reqId" }
+                    ],
+                    "buttons": [
+                        {
+                            "label": "Regresar",
+                            "iconClass": "fa fa-caret-left",
+                            "tooltip": "Regresar",
+                            "process": {
+                                "pageId": 1
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+            "id": 5,
+            "type": 4,
+            "headerStyle": [{
+                    "color": "#5c6873"
+                },
+                {
+                    "backgroundColor": "#0099CC"
+                }
+            ],
+            "tables": [{
+                    "queryId": 43,
+                    "columns": [{
+                            "label": "Información General",
+                            "columns": [
+                                { "label": "Requerimiento", "name": "reqId", "width": 100 },
+                                { "label": "", "width": 20 },
+                                { "label": "Negocio / Segmento", "name": "sistema", "width": 135 },
+                                { "label": "", "width": 20 },
+                                { "label": "Solicitante", "name": "solicitante", "width": 120 }
+                            ]
+                        },
+                        {
+                            "label": "Fechas",
+                            "columns": [
+                                { "label": "", "width": 10 },
+                                { "label": "Inicio Pruebas", "name": "inicioPrueba", "width": 120 },
+                                { "label": "Fin de Pruebas", "name": "finPrueba", "width": 120 },
+                                { "label": "Lanzamiento", "name": "lanzamiento", "width": 120 }
+                            ]
+                        },
+                        {
+                            "label": "Estado",
+                            "columns": [
+                                { "label": "", "width": 10 },
+                                {
+                                "name": "estado",
+                                "width": 120,
+                                "styleType": 1,
+                                "styleValue": {
+                                    "Registrado": "#00A6D6",
+                                    "Análisis": "#A2231D",
+                                    "Derivado": "#58C700",
+                                    "Rechazado": "#FF0C0C",
+                                    "Prueba": "#2D572C",
+                                    "Terminado": "#67381A",
+                                    "Planificación": "#E69DFB",
+                                    "Cancelado": "#b4b4b4",
+                                    "Asignado": "#9d9101",
+                                    "Standby": "#ff8000"
+                                }
+                            }]
+                        }
+                    ]
+                },
+                {
+                    "title": "RESUMEN",
+                    "queryId": 44,
+                    "columns": [{
+                            "label": "Avance General",
+                            "columns": [
+                                { "label": "% Ejecutado OK", "name": "realizadaOk", "width": 120 },
+                                { "label": "% Error", "name": "realizadaError", "width": 120 },
+                                { "label": "% Pendiente", "name": "pendiente", "width": 120 }
+                            ]
+                        },
+                        {
+                            "label": "Hallazgos Detectados",
+                            "columns": [
+                                { "label": "", "width": 10 },
+                                { "label": "Critical", "name": "hallazgoCritical", "width": 120, "headerStyle": { "backgroundColor": "#f86c6b", "color": "#23282c" } },
+                                { "label": "High", "name": "hallazgoHigh", "width": 120, "headerStyle": { "backgroundColor": "#f8cb00", "color": "#23282c" } },
+                                { "label": "Medium", "name": "hallazgoMedium", "width": 120, "headerStyle": { "backgroundColor": "#d6d8db", "color": "#23282c" } },
+                                { "label": "Low", "name": "hallazgoLow", "width": 120, "headerStyle": { "backgroundColor": "#4dbd74", "color": "#23282c" } },
+                                { "label": "Total", "name": "hallazgoTotal", "width": 120, "headerStyle": { "backgroundColor": "", "color": "#23282c" } }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "queryId": 45,
+                    "title": "AVANCE POR ESCENARIOS",
+                    "columns": [
+                        {
+                            "label": "",
+                            "columns": [
+                               
+                            ]
+                        },
+                        {
+                            "label": "",
+                            "columns": [
+                               
+                            ]
+                        },
+                        {
+                        "label": "Casos de prueba",
+                        "columns": [
+                            { "label": "Escenarios", "name": "nombreEscenario", "width": 120 },
+                            { "label": "Total", "name": "casosTotal", "width": 120 },
+                            { "label": "", "width": 10 },
+                            { "label": "Ok", "name": "casosOk", "width": 145 },
+                            { "label": "Error", "name": "casosError", "width": 150 },
+                            { "label": "Pendiente", "name": "casosPendiente", "width": 150, "column": 12}
+                        ]
+                    }]
+                },
+                {
+                    "queryId": 49,
+                    "title": "AVANCE POR CASOS DE PRUEBAS",
+                    "columns": [{
+                            "columns": [
+                                { "label": "Casos de Prueba", "name": "casosPrueba", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Canal", "name": "canal", "width": 120 },
+                                { "label": "Transacción", "name": "transaccion", "width": 120 },
+                                { "label": "Estado", "name": "resultado", "width": 120 },
+                                { "label": "Prioridad", "name": "prioridad", "width": 120 },
+                                { "label": "Aplicación", "name": "aplicacion", "width": 120 }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "queryId": 46,
+                    "title": "HALLAZGOS",
+                    "columns": [{
+                            "columns": [
+                                { "label": "N°", "name": "numHallazgo", "width": 60 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Estado Hallazgo", "name": "estadoHallazgo", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Categoria", "name": "tipoHallazgo", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Sub categoria", "name": "detalleHallazgo", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Descripción", "name": "descripcionHallazgo", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Detalle", "name": "observacionHallazgo", "width": 300 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Fecha de creación", "name": "fechaHallazgo", "width": 200 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Antigüedad", "name": "duracionHallazgo", "width": 160 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Criticidad", "name": "impactoHallazgo", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Sistema", "name": "sistema", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Responsable Solución", "name": "responsableSolucion", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Ticket", "name": "ticket", "width": 150 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "Fecha Solución", "name": "fechaSolucion", "width": 120 }
+                            ]
+                        },
+                        {
+                            "columns": [
+                                { "label": "QC", "name": "qc", "width": 120 }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "queryId": 47,
+                    "title": "CONSIDERACIONES",
+                    "columns": [
+                        { "name": "num", "width": 120 },
+                        { "name": "descripcion", "width": 120 }
+                    ]
+                }
+            ]
+        }]
+    },
+    {
+        "id": 4,
+        "url": "requerimiento/escenario",
+        "title": "Agregar Escenario",
+        "components": [{
+            "type": 3,
+            "id": 5,
+            "form": {
+                "dataQueryId": 27,
+                "updateQueryId": 28,
+                "insertQueryId": 18,
+                "deleteQueryId": 29,
+                "dataParams": ["escenarioId"],
+                "fields": [
+                    { "type": 7, "name": "escenarioId" },
+                    { "label": "Escenario", "name": "escenario", "required": true },
+                    { "type": 4, "label": "Tipo", "name": "tipo", "queryId": 16, "required": true },
+                    { "type": 4, "label": "Sistema", "name": "sistema", "queryId": 15, "required": true },
+                    { "type": 4, "label": "Transacción", "name": "transaccion", "queryId": 17, "required": true },
+                    { "label": "Total de Validaciones", "name": "validacionTotal", "required": true },
+                    { "label": "Validaciones Realizadas", "name": "validacionRealizada", "required": true },
+                    { "label": "Validaciones Correctas", "name": "validacionCorrecta", "required": true }
+                ]
+            },
+            "grid": {
+                "queryId": 26,
+                "columns": [
+                    { "label": "Escenarios", "name": "escenario", "width": 120 },
+                    { "label": "Sistema", "name": "sistema", "width": 120 },
+                    { "label": "Transacción", "name": "transaccion", "width": 120 },
+                    { "label": "Validaciones", "name": "validacionTotal", "width": 120 },
+                    { "label": "Val. Realizadas", "name": "validacionRealizada", "width": 120 },
+                    { "label": "Val. Error", "name": "validacionError", "width": 120 },
+                    { "label": "% Avance", "name": "avance", "width": 120 }
+                ]
+            }
+        }]
+    },
+    {
+        "id": 5,
+        "url": "requerimiento/dato",
+        "title": "Agregar Dato",
+        "components": [{
+            "id": 6,
+            "type": 3,
+            "form": {
+                "id": 5,
+                "dataQueryId": 30,
+                "updateQueryId": 31,
+                "insertQueryId": 19,
+                "deleteQueryId": 32,
+                "dataParams": ["datoId"],
+                "fields": [
+                    { "type": 7, "name": "datoId" },
+                    { "label": "Número de Analistas QA", "name": "numQa" },
+                    { "label": "Número de Líneas", "name": "numLineas" },
+                    { "type": 5, "label": "Consideraciones", "name": "consideracion", "column": 12 }
+                ]
+            },
+            "grid": {
+                "queryId": 33,
+                "columns": [
+                    { "label": "Núm. QA", "name": "numQa", "width": 120 },
+                    { "label": "Núm. Lineas", "name": "numLineas", "width": 120 },
+                    { "label": "Transacción", "name": "consideracion", "width": 300 }
+                ]
+            }
+        }]
+    },
+    {
+        "id": 6,
+        "url": "requerimiento/beneficio",
+        "title": "Agregar Beneficio",
+        "components": [{
+            "id": 7,
+            "type": 3,
+            "form": {
+                "id": 6,
+                "dataQueryId": 34,
+                "updateQueryId": 35,
+                "insertQueryId": 20,
+                "deleteQueryId": 36,
+                "dataParams": ["beneficioId"],
+                "fields": [
+                    { "type": 7, "name": "beneficioId" },
+                    { "type": 4, "label": "Sistema", "name": "sistema", "queryId": 21 },
+                    { "type": 4, "label": "Tipo de Beneficio", "name": "tipoBeneficio", "queryId": 22 },
+                    { "type": 4, "label": "Tipo", "name": "tipo", "queryId": 23 },
+                    { "label": "Código Bolton", "name": "codigo" },
+                    { "label": "Nombre de Beneficio", "name": "nombreBeneficio", "column": 12 },
+                    { "label": "Cantidad", "name": "cantidad" },
+                    { "label": "Vigencia", "name": "vigencia" },
+                    { "type": 4, "label": "Recurrencia", "name": "recurrencia", "queryId": 24 },
+                    { "label": "Código Recurrencia", "name": "codRecurrencia" },
+                    { "type": 4, "label": "Contingencia", "name": "contingencia", "queryId": 24 },
+                    { "label": "Código Contingencia", "name": "codContingencia" }
+                ]
+            },
+            "grid": {
+                "queryId": 37,
+                "columns": [
+                    { "label": "Sistema", "name": "sistema", "width": 120 },
+                    { "label": "Tipo de Beneficio", "name": "tipoBeneficio", "width": 120 },
+                    { "label": "Tipo", "name": "tipo", "width": 300 },
+                    { "label": "Nombre de Beneficio", "name": "nombreBeneficio", "width": 300 },
+                    { "label": "Cantidad", "name": "cantidad" },
+                    { "label": "Vigencia", "name": "vigencia" }
+                ]
+            }
+        }]
+    },
+    {
+        "id": 7,
+        "url": "requerimiento/prueba",
+        "title": "Prueba",
+        "components": [{
+            "id": 8,
+            "type": 2,
+            "form": {
+                "id": 7,
+                "fields": [{
+                        "type": 3,
+                        "label": "Inicio",
+                        "name": "inicio",
+                        "format": "DD/MM/YYYY",
+                        "validation": { "expression": "@inicio > @fin", "result": "Ingrese un rango de fechas válido" }
+                    },
+                    { "type": 3, "label": "Fin", "name": "fin", "format": "DD/MM/YYYY" }
+                ]
+            }
+        }]
+    }
+
+
+
+]

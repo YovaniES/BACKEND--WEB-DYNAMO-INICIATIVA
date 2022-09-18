@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>658d7c2b-2744-44d7-8f43-e3dbd45cd0b7</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BLL\BLL.csproj" />
+    <ProjectReference Include="..\ConfiguradorBLL\ConfiguradorBLL.csproj" />
+    <ProjectReference Include="..\Referencia\Referencia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ConfiguradorModel">
+      <HintPath>..\SharedLibraries\ConfiguradorModel.dll</HintPath>
+    </Reference>
+    <Reference Include="ConfiguradorUtil">
+      <HintPath>..\SharedLibraries\ConfiguradorUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="DALBase">
+      <HintPath>..\SharedLibraries\DALBase.dll</HintPath>
+    </Reference>
+    <Reference Include="DALBaseMySql">
+      <HintPath>..\SharedLibraries\DALBaseMySql.dll</HintPath>
+    </Reference>
+    <Reference Include="IDALBase">
+      <HintPath>..\SharedLibraries\IDALBase.dll</HintPath>
+    </Reference>
+    <Reference Include="ModelBase">
+      <HintPath>..\SharedLibraries\ModelBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SeguridadWebUtil">
+      <HintPath>..\SharedLibraries\SeguridadWebUtil.dll</HintPath>
+    </Reference>
+    <Reference Include="Util">
+      <HintPath>..\SharedLibraries\Util.dll</HintPath>
+    </Reference>
+    <Reference Include="WebBase">
+      <HintPath>..\SharedLibraries\WebBase.dll</HintPath>
+    </Reference>
+    <Reference Include="WebUtil">
+      <HintPath>..\SharedLibraries\WebUtil.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/asmdef" /></VisualStudio></ProjectExtensions>
+
+</Project>

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="ConfiguradorModel">
+      <HintPath>..\SharedLibraries\ConfiguradorModel.dll</HintPath>
+    </Reference>
+    <Reference Include="DALBase">
+      <HintPath>..\SharedLibraries\DALBase.dll</HintPath>
+    </Reference>
+    <Reference Include="DALBaseMySql">
+      <HintPath>..\SharedLibraries\DALBaseMySql.dll</HintPath>
+    </Reference>
+    <Reference Include="IDALBase">
+      <HintPath>..\SharedLibraries\IDALBase.dll</HintPath>
+    </Reference>
+    <Reference Include="ModelBase">
+      <HintPath>..\SharedLibraries\ModelBase.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

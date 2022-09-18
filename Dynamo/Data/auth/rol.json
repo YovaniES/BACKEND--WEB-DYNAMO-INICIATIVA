@@ -1,0 +1,28 @@
+[
+  {
+    "rolId": 1,
+    "rolSistemaDescripcion": "Solicitante",
+    "rolSistemaId":"402"
+  },
+  {
+    "rolId": 2,
+    "rolSistemaDescripcion": "Gestor",
+    "rolSistemaId":"401"
+  },
+  {
+    "rolId": 3,
+    "rolSistemaDescripcion": "Lider",
+    "rolSistemaId":"101"
+  },
+  {
+    "rolId": 4,
+    "rolSistemaDescripcion": "Analista",
+    "rolSistemaId":"102"
+  }
+]
+
+
+
+
+
+ 
