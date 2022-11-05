@@ -24,6 +24,9 @@ namespace Dynamo
             services.AddHttpClient();
             services.AddControllers();
 
+            services.AddCors(options => options.AddDefaultPolicy(
+                builder => builder.AllowAnyOrigin()));
+
             SeguridadWebUtil.Config.JwtConfig.AddInConfigureServices(Configuration, services);
             CorsConfig.AddInConfigureServices(Configuration, services);
             SistemaConfig.AddInConfigureServices(Configuration, services);
@@ -40,6 +43,7 @@ namespace Dynamo
                 app.UseDeveloperExceptionPage();
             }
             //app.UseHttpsRedirection();
+            app.UseCors();
             app.UseAuthorization();
             app.UseErrorHandling();
             app.UseEndpoints(endpoints =>
