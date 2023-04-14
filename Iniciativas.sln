@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29324.140
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{5746E6C4-E281-4022-B037-18838829E244}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{B29594DB-B5B3-431C-9D94-9F2C0D277333}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dynamo", "Dynamo\Dynamo.csproj", "{13C96CA9-3268-4611-826B-0EECCB250703}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iniciativas", "Dynamo\Iniciativas.csproj", "{13C96CA9-3268-4611-826B-0EECCB250703}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfiguradorBLL", "ConfiguradorBLL\ConfiguradorBLL.csproj", "{61C61145-FF5C-41AA-9AAF-2A23D7976FB7}"
 EndProject
